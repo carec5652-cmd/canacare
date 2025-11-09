@@ -6,8 +6,7 @@ import 'package:admin_can_care/data/repositories/doctor_repository.dart';
 import 'package:admin_can_care/ui/widgets/person_card.dart';
 import 'package:admin_can_care/ui/widgets/empty_state.dart';
 import 'package:admin_can_care/ui/widgets/search_bar_widget.dart';
-import 'package:admin_can_care/ui/widgets/animated_list_item.dart';
-import 'package:admin_can_care/ui/widgets/app_drawer.dart';
+import 'package:admin_can_care/ui/layouts/main_layout.dart';
 
 // Doctors List Screen - شاشة قائمة الأطباء
 // Path: /doctors
@@ -37,24 +36,22 @@ class _DoctorsListScreenState extends State<DoctorsListScreen> {
     final theme = Theme.of(context);
     final isRTL = Directionality.of(context) == TextDirection.rtl;
 
-    return Scaffold(
-      drawer: const AppDrawer(),
-      appBar: AppBar(
-        title: Text(isRTL ? 'الأطباء' : 'Doctors'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list_rounded),
-            onPressed: _showFilterDialog,
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
+    return MainLayout(
+      title: 'Doctors',
+      titleAr: 'الأطباء',
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.filter_list_rounded),
+          onPressed: _showFilterDialog,
+        ),
+        const SizedBox(width: 8),
+      ],
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.pushNamed(context, '/doctors/add'),
         icon: const Icon(Icons.add),
         label: Text(isRTL ? 'إضافة طبيب' : 'Add Doctor'),
       ),
-      body: Column(
+      child: Column(
         children: [
           // Search Bar
           Padding(
@@ -116,67 +113,63 @@ class _DoctorsListScreenState extends State<DoctorsListScreen> {
                   padding: const EdgeInsets.only(bottom: 80),
                   itemBuilder: (context, index) {
                     final doctor = filteredDoctors[index];
-                    return AnimatedListItem(
-                      index: index,
-                      delay: 30,
-                      child: PersonCard(
-                        name: doctor.name,
-                        subtitle: doctor.specialty,
-                        photoUrl: doctor.photoUrl,
-                        status: doctor.status,
-                        onTap:
-                            () => Navigator.pushNamed(
-                              context,
-                              '/doctors/${doctor.id}',
-                              arguments: doctor,
-                            ),
-                        actions: [
-                          PopupMenuButton<String>(
-                            onSelected: (value) => _handleAction(value, doctor),
-                            itemBuilder:
-                                (context) => [
-                                  PopupMenuItem(
-                                    value: 'view',
-                                    child: Row(
-                                      children: [
-                                        const Icon(Icons.visibility),
-                                        const SizedBox(width: 8),
-                                        Text(isRTL ? 'عرض' : 'View'),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'edit',
-                                    child: Row(
-                                      children: [
-                                        const Icon(Icons.edit),
-                                        const SizedBox(width: 8),
-                                        Text(isRTL ? 'تعديل' : 'Edit'),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: doctor.status == 'active' ? 'deactivate' : 'activate',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          doctor.status == 'active'
-                                              ? Icons.block
-                                              : Icons.check_circle,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          doctor.status == 'active'
-                                              ? (isRTL ? 'تعطيل' : 'Deactivate')
-                                              : (isRTL ? 'تنشيط' : 'Activate'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                    return PersonCard(
+                      name: doctor.name,
+                      subtitle: doctor.specialty,
+                      photoUrl: doctor.photoUrl,
+                      status: doctor.status,
+                      onTap:
+                          () => Navigator.pushNamed(
+                            context,
+                            '/doctors/${doctor.id}',
+                            arguments: doctor,
                           ),
-                        ],
-                      ),
+                      actions: [
+                        PopupMenuButton<String>(
+                          onSelected: (value) => _handleAction(value, doctor),
+                          itemBuilder:
+                              (context) => [
+                                PopupMenuItem(
+                                  value: 'view',
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.visibility),
+                                      const SizedBox(width: 8),
+                                      Text(isRTL ? 'عرض' : 'View'),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'edit',
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.edit),
+                                      const SizedBox(width: 8),
+                                      Text(isRTL ? 'تعديل' : 'Edit'),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: doctor.status == 'active' ? 'deactivate' : 'activate',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        doctor.status == 'active'
+                                            ? Icons.block
+                                            : Icons.check_circle,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        doctor.status == 'active'
+                                            ? (isRTL ? 'تعطيل' : 'Deactivate')
+                                            : (isRTL ? 'تنشيط' : 'Activate'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                        ),
+                      ],
                     );
                   },
                 );
